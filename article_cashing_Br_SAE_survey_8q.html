@@ -4544,7 +4544,7 @@ window.CQ_PAGE_CONFIG = {
           "notes": [
             "※1 ご契約の翌日から30日間は金利0円です。（アコムでのご契約がはじめてのお客さま）",
             "※2 お申込時間や審査によりご希望に添えない場合がございます。",
-            "※3 50万円以下は原則収入証明書類不要(利用限度額50万円以下、且つ他社含めた借入総額100万円以下の場合）"
+            "※3 50万円以下は原則収入証明書類不要(利用限度額50万円以下、且つ他社含めた借入総額100万円以下の場合）。身分証は運転免許証、マイナンバーカード、パスポート、（交付を受けていない方は）資格確認書。"
           ]
         }
       },
@@ -4618,7 +4618,7 @@ window.CQ_PAGE_CONFIG = {
           "notes": [
             "※1 ご契約の翌日から30日間は金利0円です。（アコムでのご契約がはじめてのお客さま）",
             "※2 お申込時間や審査によりご希望に添えない場合がございます。",
-            "※3 50万円以下は原則収入証明書類不要(利用限度額50万円以下、且つ他社含めた借入総額100万円以下の場合）"
+            "※3 50万円以下は原則収入証明書類不要(利用限度額50万円以下、且つ他社含めた借入総額100万円以下の場合）。身分証は運転免許証、マイナンバーカード、パスポート、（交付を受けていない方は）資格確認書。"
           ]
         }
       }
@@ -4918,8 +4918,8 @@ window.CQ_PAGE_CONFIG = Object.assign({}, window.CQ_PAGE_CONFIG || {}, {
                     cost: '契約翌日から30日間の金利0円を確認しながら、利息負担を抑えたい方に向いています。'
                 },
                 points: [
-                    '契約翌日から30日間の金利0円',
-                    '最短20分で融資まで進められる可能性がある',
+                    '初回契約翌日から30日間の金利0円',
+                    '最短20分<span class="note-mark">（※1）</span>で融資まで進められる可能性がある',
                     'お勤め先へ在籍確認の電話一切なし<span class="note-mark">（※3）</span>'
                 ],
                 notes: [
@@ -6054,8 +6054,13 @@ window.CQ_PAGE_CONFIG = Object.assign({}, window.CQ_PAGE_CONFIG || {}, {
             var priority = saved.state.priority || 'speed';
             var resultVariant = saved.state.usage === 'experienced' ? 'experienced' : 'first_time';
             var ctaUrl = appendParams(offer.url || OFFERS.sm.url, saved.params);
-            var pointsData = Array.isArray(offer.points) && offer.points.length ? offer.points : OFFERS.sm.points;
-            var notesData = Array.isArray(offer.notes) && offer.notes.length ? offer.notes : OFFERS.sm.notes;
+            var pointsData = Array.isArray(offer.points) && offer.points.length ? offer.points.slice() : OFFERS.sm.points.slice();
+            var notesData = Array.isArray(offer.notes) && offer.notes.length ? offer.notes.slice() : OFFERS.sm.notes.slice();
+            var isQuestionnaireReturnFlow = new URLSearchParams(window.location.search).has('cq_return_url');
+            if (offer.id === 'ac' && isQuestionnaireReturnFlow) {
+                pointsData[2] = 'お勤め先へ在籍確認の電話100％なし<span class="note-mark">（※3）</span>';
+                notesData[2] = '※3 電話での在籍確認は100％なし。書面やご申告内容での確認を実施します。身分証は運転免許証、マイナンバーカード、パスポート、（交付を受けていない方は）資格確認書。';
+            }
             applySurfaceContract(page, offer.id);
 
             document.documentElement.style.setProperty('--cq-offer', offer.theme);
